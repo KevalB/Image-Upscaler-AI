@@ -4,7 +4,7 @@ from tensorflow.keras.models import Model
 
 def CustomModel():
     # Input layer
-    input_layer = Input(shape=(64, 64, 3))  # Input image size is 256x256x3
+    input_layer = Input(shape=(256, 256, 3))  # Input image size is 256x256x3
     
     # Convolutional layers for deblurring
     x = Conv2D(64, (3, 3), activation='relu', padding='same')(input_layer)

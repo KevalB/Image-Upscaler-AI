@@ -19,7 +19,7 @@ def load_data():
         image = cv2.imread(filename)
         
         # Resize the image to match the input shape of the model (64x64)
-        image = cv2.resize(image, (64, 64))
+        # image = cv2.resize(image, (64, 64))
         
         # Normalize the pixel values to the range [0, 1]
         image = image / 255.0
