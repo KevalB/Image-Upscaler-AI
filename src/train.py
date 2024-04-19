@@ -1,6 +1,8 @@
 import tensorflow as tf
 from models.custom_model import CustomModel
 from src.data_loader import load_data
+from tensorflow.keras.losses import mean_squared_error
+
 
 def train_model():
     # Load and preprocess data
@@ -10,7 +12,7 @@ def train_model():
     model = CustomModel()
     
     # Compile model
-    model.compile(optimizer='adam', loss='mse', metrics=['accuracy'])
+    model.compile(optimizer='adam', loss=mean_squared_error, metrics=['accuracy'])
     
     # Train model
     model.fit(train_data, train_labels, epochs=10, batch_size=32)
