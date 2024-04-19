@@ -9,7 +9,7 @@ def upscale_image():
     
     # Load and preprocess input image
     input_image = cv2.imread('data/raw_images/0001x2.png')
-    input_image = cv2.resize(input_image, (64, 64))  # Resize to match model input shape
+    input_image = cv2.resize(input_image, (256, 256))  # Resize to match model input shape
     input_image = np.expand_dims(input_image, axis=0)  # Add batch dimension
     input_image = input_image / 255.0  # Normalize
     
