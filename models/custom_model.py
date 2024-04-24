@@ -2,26 +2,19 @@ import tensorflow as tf
 from tensorflow.keras import layers, models
 
 def custom_model(input_shape=(None, None, 3)):
-    # Input layer
+    # Input layer with dynamic input shape
     inputs = layers.Input(shape=input_shape)
-
-    # Initial Convolutional Layer
+    
+    # Encoder
     x = layers.Conv2D(64, (3, 3), activation='relu', padding='same')(inputs)
-
-    # Residual blocks
-    for _ in range(16):
-        x = residual_block(x)
-
-    # Upsampling blocks
-    x = layers.Conv2D(256, (3, 3), activation='relu', padding='same')(x)
-    x = layers.UpSampling2D(size=(2, 2))(x)
-    x = layers.Conv2D(256, (3, 3), activation='relu', padding='same')(x)
-    x = layers.UpSampling2D(size=(2, 2))(x)
-
-    # Final Convolutional Layer
-    outputs = layers.Conv2D(3, (3, 3), activation='sigmoid', padding='same')(x)
-
-    model = models.Model(inputs, outputs)
+    x = layers.MaxPooling2D((2, 2))(x)
+    
+    # Decoder
+    x = layers.Conv2DTranspose(64, (3, 3), activation='relu', padding='same', strides=(2, 2))(x)
+    x = layers.Conv2D(3, (3, 3), activation='sigmoid', padding='same')(x)
+    
+    model = models.Model(inputs, x)
+    
     return model
 
 def residual_block(x):
