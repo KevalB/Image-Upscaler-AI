@@ -3,9 +3,9 @@ from tensorflow.keras.optimizers import Adam
 from models.custom_model import custom_model
 from src.data_loader import load_data
 
-def train_model():
+def train_model(input_dir='data/raw_images/', output_dir='data/processed_images/'):
     # Load data
-    images, labels = load_data()
+    images, labels = load_data(input_dir, output_dir)
     
     # Define the input shape based on the first image's shape
     input_shape = images[0].shape
