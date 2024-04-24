@@ -2,26 +2,18 @@ import tensorflow as tf
 from tensorflow.keras.models import load_model
 import numpy as np
 import cv2
+from src.data_loader import load_data
 
 def upscale_image():
-    # Load trained model
-    model = load_model('custom_model.h5')
+    model = load_model('custom_model.h5', compile=False)
     
-    # Load and preprocess input image
-    input_image = cv2.imread('data/raw_images/0001x2.png')
-    input_image = cv2.resize(input_image, (256, 256))  # Resize to match model input shape
-    input_image = np.expand_dims(input_image, axis=0)  # Add batch dimension
-    input_image = input_image / 255.0  # Normalize
+    images, file_names = load_data()
     
-    # Make prediction
-    predicted_image = model.predict(input_image)
+    predicted_images = model.predict(images)
     
-    # Post-process predicted image
-    predicted_image = (predicted_image * 255).astype(np.uint8)
-    predicted_image = predicted_image.reshape((predicted_image.shape[1], predicted_image.shape[2], 3))
-    
-    # Save predicted image
-    cv2.imwrite('data/processed_images/0001x2.png', predicted_image)
+    for i, predicted_image in enumerate(predicted_images):
+        predicted_image = (predicted_image * 255).astype(np.uint8)
+        cv2.imwrite(f'data/processed_images/{file_names[i]}', cv2.cvtColor(predicted_image, cv2.COLOR_RGB2BGR))
 
 if __name__ == '__main__':
     upscale_image()

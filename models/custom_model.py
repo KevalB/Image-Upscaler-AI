@@ -1,20 +1,37 @@
 import tensorflow as tf
-from tensorflow.keras.layers import Input, Conv2D
-from tensorflow.keras.models import Model
+from tensorflow.keras import layers, models
 
-def CustomModel():
+def custom_model(input_shape=(None, None, 3)):
     # Input layer
-    input_layer = Input(shape=(256, 256, 3))  # Input image size is 256x256x3
-    
-    # Convolutional layers for deblurring
-    x = Conv2D(64, (3, 3), activation='relu', padding='same')(input_layer)
-    x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
-    x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
-    
-    # Output layer
-    output_layer = Conv2D(3, (3, 3), activation='sigmoid', padding='same')(x)
-    
-    # Create model
-    model = Model(inputs=input_layer, outputs=output_layer)
-    
+    inputs = layers.Input(shape=input_shape)
+
+    # Initial Convolutional Layer
+    x = layers.Conv2D(64, (3, 3), activation='relu', padding='same')(inputs)
+
+    # Residual blocks
+    for _ in range(16):
+        x = residual_block(x)
+
+    # Upsampling blocks
+    x = layers.Conv2D(256, (3, 3), activation='relu', padding='same')(x)
+    x = layers.UpSampling2D(size=(2, 2))(x)
+    x = layers.Conv2D(256, (3, 3), activation='relu', padding='same')(x)
+    x = layers.UpSampling2D(size=(2, 2))(x)
+
+    # Final Convolutional Layer
+    outputs = layers.Conv2D(3, (3, 3), activation='sigmoid', padding='same')(x)
+
+    model = models.Model(inputs, outputs)
     return model
+
+def residual_block(x):
+    y = layers.Conv2D(64, (3, 3), activation='relu', padding='same')(x)
+    y = layers.Conv2D(64, (3, 3), activation='relu', padding='same')(y)
+    return layers.Add()([x, y])
+
+# Create the ESRGAN generator model
+esrgan_gen_model = custom_model()
+esrgan_gen_model.compile(optimizer='adam', loss='mse', metrics=['accuracy'])
+
+# Display the model summary
+esrgan_gen_model.summary()

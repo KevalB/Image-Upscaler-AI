@@ -1,21 +1,24 @@
 import tensorflow as tf
-from models.custom_model import CustomModel
+from tensorflow.keras.optimizers import Adam
+from models.custom_model import custom_model
 from src.data_loader import load_data
-from tensorflow.keras.losses import mean_squared_error
-
 
 def train_model():
-    # Load and preprocess data
-    train_data, train_labels = load_data()
+    # Load data
+    images, labels = load_data()
     
-    # Initialize custom model
-    model = CustomModel()
+    # Define the input shape based on the first image's shape
+    input_shape = images[0].shape
+    
+    # Create model
+    model = custom_model(input_shape)
     
     # Compile model
-    model.compile(optimizer='adam', loss=mean_squared_error, metrics=['accuracy'])
+    optimizer = Adam(learning_rate=0.001)
+    model.compile(optimizer=optimizer, loss='mse')
     
     # Train model
-    model.fit(train_data, train_labels, epochs=10, batch_size=32)
+    model.fit(images, labels, epochs=10, batch_size=32, verbose=1)
     
     # Save model
     model.save('custom_model.h5')
