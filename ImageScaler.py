@@ -130,7 +130,7 @@ full_precision_vram_multiplier = 0.7
 
 SRVGGNetCompact_models_list = [ 'RealESR_Gx4', 'RealSRx4_Anime' ]
 RRDB_models_list   = [ 'BSRGANx4', 'BSRGANx2', 'RealESRGANx4']
-
+#SETVALUES
 AI_models_list         = ['RealESRGANx4']
 gpus_list              = [ 'High performance', 'Power saving']
 image_extension_list   = [ '.png']
@@ -147,7 +147,7 @@ default_interpolation     = interpolation_list[0]
 default_AI_precision      = AI_precision_list[0]
 default_AI_multithreading = AI_multithreading_list[0]
 default_output_path       = "Same path as input files"
-default_resize_factor     = str(50)
+default_resize_factor     = str(70)
 default_VRAM_limiter      = str(8)
 default_cpu_number        = str(int(os_cpu_count()/2))
 
@@ -1967,12 +1967,13 @@ def show_error_message(exception: str) -> None:
     )
 
 def open_files_action():
+    initial_dir = "F:/KevalBehera_KushalMunjal_ImageUpscaling/Image-Upscaler-AI/Data_Input"  # Specify the initial directory here
     info_message.set("Selecting files")
 
-    uploaded_files_list    = list(filedialog.askopenfilenames())
+    uploaded_files_list = list(filedialog.askopenfilenames(initialdir=initial_dir))
     uploaded_files_counter = len(uploaded_files_list)
 
-    supported_files_list    = check_supported_selected_files(uploaded_files_list)
+    supported_files_list = check_supported_selected_files(uploaded_files_list)
     supported_files_counter = len(supported_files_list)
     
     print("> Uploaded files: " + str(uploaded_files_counter) + " => Supported files: " + str(supported_files_counter))
@@ -1981,8 +1982,10 @@ def open_files_action():
         global scrollable_frame_file_list
 
         global selected_AI_model
-        if   'x2' in selected_AI_model: upscale_factor = 2
-        elif 'x4' in selected_AI_model: upscale_factor = 4
+        if 'x2' in selected_AI_model:
+            upscale_factor = 2
+        elif 'x4' in selected_AI_model:
+            upscale_factor = 4
 
         try:
             resize_factor = int(float(str(selected_resize_factor.get())))
@@ -1990,25 +1993,26 @@ def open_files_action():
             resize_factor = 0
 
         scrollable_frame_file_list = ScrollableImagesTextFrame_upscaler(
-            master = window, 
-            selected_file_list = supported_files_list,
-            resize_factor  = resize_factor,
-            upscale_factor = upscale_factor,
-            fg_color = dark_color, 
-            bg_color = dark_color
+            master=window, 
+            selected_file_list=supported_files_list,
+            resize_factor=resize_factor,
+            upscale_factor=upscale_factor,
+            fg_color=dark_color, 
+            bg_color=dark_color
         )
         
         scrollable_frame_file_list.place(
-            relx = 0.0, 
-            rely = 0.0, 
-            relwidth  = 1.0, 
-            relheight = 0.42
+            relx=0.0, 
+            rely=0.0, 
+            relwidth=1.0, 
+            relheight=0.42
         )
         
         info_message.set("Ready")
 
     else: 
         info_message.set("Not supported files :(")
+
 
 def open_output_path_action():
     asked_selected_output_path = filedialog.askdirectory()
@@ -2397,7 +2401,7 @@ def place_output_path_textbox():
     output_path_textbox = create_text_box_output_path(selected_output_path) 
     select_output_path_button = create_active_button(
         command = open_output_path_action,
-        text    = "SELECT",
+        text    = "DEFAULT",
         width   = 85,
         height  = 25
     )
@@ -2613,7 +2617,7 @@ if __name__ == "__main__":
     selected_resize_factor.set(default_resize_factor)
     selected_VRAM_limiter.set(default_VRAM_limiter)
     selected_cpu_number.set(default_cpu_number)
-    selected_output_path.set(default_output_path)
+    selected_output_path.set("F:\KevalBehera_KushalMunjal_ImageUpscaling/Image-Upscaler-AI/Data_Output")
 
     info_message.set("Developed by Kushal Munjal & Keval Behera :)")
     selected_resize_factor.trace_add('write', update_file_widget)
