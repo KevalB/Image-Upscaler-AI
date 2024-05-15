@@ -1,7 +1,3 @@
 Image Upscaler | AI Project
 
-To train the model-
-python main.py --mode train
-
-To test the model-
-python main.py --mode predict
+Project Video : https://youtu.be/71q1HuV4-4Q
